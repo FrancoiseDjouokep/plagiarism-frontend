@@ -1,0 +1,71 @@
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(4px);           
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+input{
+  width: 100%;
+  padding: 10px;
+  background-color: #222;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #00bfff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #009ad9;
+}
+
+.google-button {
+  background-color: #009ad9;
+}
+
+.google-button:hover {
+  background-color: rgba(0, 0, 255, 0.164);
+}
+
+.register-link, .forgot-password {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.register-link a, .forgot-password a {
+  color: #00bfff;
+  text-decoration: none;
+}
+
+.register-link a:hover, .forgot-password a:hover {
+  text-decoration: underline;
+}
+

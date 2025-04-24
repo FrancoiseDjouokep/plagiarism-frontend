@@ -1,0 +1,61 @@
+.activation-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .activation-container h2 {
+    margin-bottom: 10px;
+  }
+  
+  .activation-container p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  .activation-container input {
+    font-size: 1.2rem;
+    padding: 12px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .activation-container button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .activation-container button:hover {
+    background-color: #005bb5;
+  }
+  
+  .message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #d8000c;
+  }
+  
+  .resend-btn {
+    background-color: transparent;
+    color: #0073e6;
+    border: none;
+    margin-top: 15px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
