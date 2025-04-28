@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { apiRequest } from '../utils/api';
 import '../styles/Login.css'; 
 
 const Register = () => {
@@ -13,17 +14,11 @@ const Register = () => {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://localhost:8080/inscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          nom: name,
-          email: email,
-          password: password
-        })
-      });
+      const response = await apiRequest('/inscription', 'POST', {
+            nom: name,
+            email: email,
+            password: password
+          });
   
       let result;
       try {

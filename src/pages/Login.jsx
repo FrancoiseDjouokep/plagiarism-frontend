@@ -34,7 +34,7 @@ const handleLogin = async (e) => {
   };
   return (
     <div className="layout">
-    <Navbar />
+   
     <div className="login-container">
       <h2>Connexion</h2>
 
