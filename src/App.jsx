@@ -15,6 +15,7 @@ import Ai_detect from './pages/Ai_detect';
 import './styles/Layout.css';
 import Activation from './pages/Activation';
 import CompareOne from './pages/CompareOne';
+import ForgotPassword from './pages/ForgotPassword';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/reinitialiser" element ={<ForgotPassword/>}/>
             <Route path="/activation" element={<Activation />} />
             <Route path="/home" element={<PrivateRoute> <Home /> </PrivateRoute>  }/>
             <Route path="/check" element={<PrivateRoute> <PlagiarismCheck /> </PrivateRoute> }/>
