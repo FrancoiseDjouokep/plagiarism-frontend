@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
-import Navbar from './components/Navbar';
+import { checkAuthStatus } from './utils/api';
 
-
+// Pages
 import Login from './pages/Login';
 import Register from './pages/Register'; 
 import Home from './pages/Home';
@@ -18,27 +19,39 @@ import CompareOne from './pages/CompareOne';
 import ForgotPassword from './pages/ForgotPassword';
 
 const App = () => {
+  // Vérifier l'état d'authentification au chargement de l'application
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
   return (
     <Router>
-      <div className="layout">
-        
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/reinitialiser" element ={<ForgotPassword/>}/>
-            <Route path="/activation" element={<Activation />} />
-            <Route path="/home" element={<PrivateRoute> <Home /> </PrivateRoute>  }/>
-            <Route path="/check" element={<PrivateRoute> <PlagiarismCheck /> </PrivateRoute> }/>
-            <Route path="/compare-one" element={<PrivateRoute> <CompareOne /> </PrivateRoute> }/>
-            <Route path="/upload" element={<PrivateRoute> <FileUploadComponent /> </PrivateRoute> }/>
-            <Route path="/ai_detect" element={<PrivateRoute> <Ai_detect /> </PrivateRoute> }/>
-            <Route path="/results" element={<PrivateRoute> <Results /> </PrivateRoute>}/>
-            <Route path="*" element={<Landing />} />
-          </Routes>
-        </main>
-      </div>
+      {/* Enveloppez votre application avec le fournisseur d'authentification */}
+      <AuthProvider>
+        <div className="layout">
+          <main className="main-content">
+            <Routes>
+              {/* Routes publiques */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/reinitialiser" element={<ForgotPassword />} />
+              <Route path="/activation" element={<Activation />} />
+              
+              {/* Routes protégées */}
+              <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+              <Route path="/check" element={<PrivateRoute><PlagiarismCheck /></PrivateRoute>} />
+              <Route path="/compare-one" element={<PrivateRoute><CompareOne /></PrivateRoute>} />
+              <Route path="/upload" element={<PrivateRoute><FileUploadComponent /></PrivateRoute>} />
+              <Route path="/ai_detect" element={<PrivateRoute><Ai_detect /></PrivateRoute>} />
+              <Route path="/results" element={<PrivateRoute><Results /></PrivateRoute>} />
+              
+              {/* Route fallback */}
+              <Route path="*" element={<Landing />} />
+            </Routes>
+          </main>
+        </div>
+      </AuthProvider>
     </Router>
   );
 };

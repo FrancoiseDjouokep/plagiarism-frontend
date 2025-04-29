@@ -1,11 +1,17 @@
 import axios from 'axios';
 
+// Création de l'instance Axios avec la configuration de base
 export const API = axios.create({
+  // Pour éviter le double préfixe /api/api, on utilise directement l'URL de base
   baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080',
-  timeout: 10000, 
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': '*/*'
+  }
 });
 
-
+// Intercepteur de requêtes - ajoute le token d'authentification aux en-têtes
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   const refreshToken = localStorage.getItem('refreshToken');
@@ -14,7 +20,7 @@ API.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  if (config.url.includes('/refresh-token') && refreshToken) {
+  if (config.url.includes('/api/refresh-token') && refreshToken) {
     config.data = { refresh: refreshToken };
   }
   
@@ -23,13 +29,17 @@ API.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+// Intercepteur de réponses - gère les tokens et le rafraichissement automatique
 API.interceptors.response.use(
   (response) => {
-    if (response.data?.bearer) {
-      localStorage.setItem('token', response.data.bearer);
+    // Extraction des données de la réponse (structure avec ou sans data imbriqué)
+    const dataObj = response.data?.data || response.data;
+    
+    if (dataObj?.bearer) {
+      localStorage.setItem('token', dataObj.bearer);
     }
-    if (response.data?.refresh) {
-      localStorage.setItem('refreshToken', response.data.refresh);
+    if (dataObj?.refresh) {
+      localStorage.setItem('refreshToken', dataObj.refresh);
     }
     return response;
   },
@@ -37,53 +47,57 @@ API.interceptors.response.use(
     const originalRequest = error.config;
     const refreshToken = localStorage.getItem('refreshToken');
     
+    // Tentative de rafraîchissement du token en cas d'erreur 401
     if (error.response?.status === 401 && 
         !originalRequest._retry && 
         refreshToken &&
-        !originalRequest.url.includes('/refresh-token') &&
-        !originalRequest.url.includes('/login')) {
+        !originalRequest.url.includes('/api/refresh-token') &&
+        !originalRequest.url.includes('/api/connexion')) {
       
       originalRequest._retry = true;
       
       try {
-        const refreshResponse = await API.post('/refresh-token', { refresh: refreshToken });
+        const refreshResponse = await API.post('/api/refresh-token', { refresh: refreshToken });
         
-        localStorage.setItem('token', refreshResponse.data.bearer);
-        localStorage.setItem('refreshToken', refreshResponse.data.refresh);
+        const dataObj = refreshResponse.data?.data || refreshResponse.data;
         
-        originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.bearer}`;
+        localStorage.setItem('token', dataObj.bearer);
+        localStorage.setItem('refreshToken', dataObj.refresh);
+        
+        originalRequest.headers.Authorization = `Bearer ${dataObj.bearer}`;
         return API(originalRequest);
       } catch (refreshError) {
-        console.warn('Refresh token failed, redirecting to login');
+        console.warn('Échec du rafraîchissement du token, redirection vers la page de connexion');
         await handleLogout();
         return Promise.reject(refreshError);
       }
     }
     
+    // Gestion des différentes erreurs HTTP
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          console.warn('Unauthorized access');
+          console.warn('Accès non autorisé');
           if (!originalRequest._retry) {
             await handleLogout();
           }
           break;
         case 403:
-          console.warn('Access denied');
+          console.warn('Accès refusé');
           break;
         case 404:
-          console.warn('Resource not found');
+          console.warn('Ressource non trouvée');
           break;
         case 500:
-          console.error('Server error');
+          console.error('Erreur serveur');
           break;
         default:
-          console.error(`Error ${error.response.status}`);
+          console.error(`Erreur ${error.response.status}`);
       }
     } else if (error.request) {
-      console.error('No response from server');
+      console.error('Pas de réponse du serveur');
     } else {
-      console.error('Request configuration error');
+      console.error('Erreur de configuration de la requête');
     }
     
     return Promise.reject(error);
@@ -91,18 +105,25 @@ API.interceptors.response.use(
 );
 
 /**
- * Generic API request function with automatic token refresh
- * @param {string} url - Endpoint URL
- * @param {string} method - HTTP method (GET, POST, etc.)
- * @param {object} data - Request payload
- * @param {object} headers - Additional headers
- * @returns {Promise} - API response
+ * Fonction générique pour les requêtes API avec rafraîchissement automatique du token
+ * @param {string} url - URL de l'endpoint
+ * @param {string} method - Méthode HTTP (GET, POST, etc.)
+ * @param {object} data - Données de la requête
+ * @param {object} headers - En-têtes supplémentaires
+ * @returns {Promise} - Réponse de l'API
  */
 export const apiRequest = async (url, method = 'GET', data = null, headers = {}) => {
   try {
+    // Assurer que l'URL commence par /api
+    const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
+    
+    // Log pour le débogage
+    console.log(`Envoi requête ${method} à: ${apiUrl}`);
+    if (data) console.log('Données:', data);
+    
     const config = {
       method,
-      url,
+      url: apiUrl,
       data,
       headers: {
         ...headers,
@@ -111,20 +132,49 @@ export const apiRequest = async (url, method = 'GET', data = null, headers = {})
     };
 
     const response = await API(config);
-    return response.data;
+    
+    // Gestion des différentes structures de réponse
+    const responseData = response.data?.data !== undefined ? response.data.data : response.data;
+    
+    // Vérification des erreurs dans la réponse
+    if (response.data?.success === false) {
+      throw new Error(response.data.message || "Erreur de serveur");
+    }
+    
+    return responseData;
   } catch (error) {
-    const errorMessage = error.response?.data?.message ||
+    // Log détaillé pour faciliter le débogage
+    console.error("API Error:", {
+      url,
+      method,
+      data,
+      errorStatus: error.response?.status,
+      errorMessage: error.message || "Erreur inconnue",
+      fullError: error.response?.data || error
+    });
+    
+    // Extraction du message d'erreur
+    const errorMessage = 
+      error.response?.data?.message || 
+      error.response?.data?.error ||
       error.message ||
-      "Request error";
+      "Erreur de connexion au serveur";
+    
     throw new Error(errorMessage);
   }
 };
 
+/**
+ * Fonction de déconnexion - efface le stockage local et redirige vers la page de connexion
+ */
 export const handleLogout = async () => {
   try {
-    await apiRequest('/deconnexion', 'POST');
+    const token = localStorage.getItem('token');
+    if (token) {
+      await apiRequest('/deconnexion', 'POST');
+    }
   } catch (error) {
-    console.error("Logout error:", error);
+    console.error("Erreur de déconnexion:", error);
   } finally {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -135,21 +185,26 @@ export const handleLogout = async () => {
   }
 };
 
+/**
+ * Fonction pour télécharger un document
+ * @param {File} file - Fichier à télécharger
+ * @param {string} title - Titre du document
+ * @returns {Promise} - Réponse du téléchargement
+ */
 export const uploadDocument = async (file, title) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('title', title);
 
-  const response = await API.post('/api/documents/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-
-  return response.data;
+  const response = await apiRequest('/documents/upload', 'POST', formData);
+  return response;
 };
 
-// Helper function to decode JWT (install jwt-decode package)
+/**
+ * Fonction auxiliaire pour décoder un JWT
+ * @param {string} token - Token JWT
+ * @returns {object|null} - Contenu décodé du token ou null
+ */
 export const decodeToken = (token) => {
   try {
     if (!token) return null;
@@ -163,17 +218,26 @@ export const decodeToken = (token) => {
     );
     return JSON.parse(jsonPayload);
   } catch (e) {
-    console.error('Error decoding token', e);
+    console.error('Erreur de décodage du token', e);
     return null;
   }
 };
 
+/**
+ * Vérifier si le token est expiré
+ * @param {string} token - Token JWT
+ * @returns {boolean} - Vrai si le token est expiré
+ */
 export const isTokenExpired = (token) => {
   const decoded = decodeToken(token);
   if (!decoded?.exp) return true;
   return Date.now() >= decoded.exp * 1000;
 };
 
+/**
+ * Initialiser le timer de rafraîchissement du token
+ * Rafraîchit automatiquement le token avant expiration
+ */
 export const initTokenRefreshTimer = () => {
   const token = localStorage.getItem('token');
   if (!token) return;
@@ -181,24 +245,63 @@ export const initTokenRefreshTimer = () => {
   const decoded = decodeToken(token);
   if (!decoded?.exp) return;
 
+  // Rafraîchir le token 1 minute avant expiration
   const expiresIn = (decoded.exp * 1000) - Date.now() - 60000;
+  
   if (expiresIn > 0) {
+    console.log(`Le token sera rafraîchi dans ${Math.round(expiresIn/1000)} secondes`);
+    
     setTimeout(async () => {
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          const response = await API.post('/refresh', { refresh: refreshToken });
-          localStorage.setItem('token', response.data.bearer);
-          localStorage.setItem('refreshToken', response.data.refresh);
-          initTokenRefreshTimer(); 
+          const response = await API.post('/api/refresh-token', { refresh: refreshToken });
+          
+          // Extraction des données de la bonne structure
+          const dataObj = response.data?.data || response.data;
+          localStorage.setItem('token', dataObj.bearer);
+          localStorage.setItem('refreshToken', dataObj.refresh);
+          
+          console.log('Token rafraîchi avec succès');
+          initTokenRefreshTimer(); // Réinitialiser le timer
         }
       } catch (error) {
-        console.error('Auto-refresh failed', error);
+        console.error('Échec du rafraîchissement automatique', error);
         handleLogout();
       }
     }, expiresIn);
+  } else {
+    // Si le token est déjà expiré, déconnecter l'utilisateur
+    console.warn('Token déjà expiré, déconnexion');
+    handleLogout();
   }
 };
 
-// Call this when your app initializes
-initTokenRefreshTimer();
+/**
+ * Vérifier l'état d'authentification au démarrage de l'application
+ * @returns {boolean} - Vrai si l'utilisateur est authentifié
+ */
+export const checkAuthStatus = () => {
+  const token = localStorage.getItem('token');
+  const refreshToken = localStorage.getItem('refreshToken');
+  
+  if (!token && !refreshToken) {
+    // Pas de tokens, l'utilisateur n'est pas connecté
+    return false;
+  }
+  
+  if (token && !isTokenExpired(token)) {
+    // Token valide, initialiser le timer de rafraîchissement
+    initTokenRefreshTimer();
+    return true;
+  }
+  
+  if (refreshToken) {
+    // Token expiré mais refresh token disponible
+    // Le rafraîchissement sera géré par l'intercepteur Axios
+    return true;
+  }
+  
+  // Aucun token valide
+  return false;
+};

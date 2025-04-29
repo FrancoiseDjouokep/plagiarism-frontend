@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { apiRequest } from '../utils/api';
+import { apiRequest, initTokenRefreshTimer, isTokenExpired } from '../utils/api';
 import '../styles/Layout.css';
 import '../styles/Login.css';
 
@@ -10,7 +10,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  
+  // Vérification si l'utilisateur est déjà connecté au chargement
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && !isTokenExpired(token)) {
+      navigate('/home');
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,16 +27,41 @@ const Login = () => {
     setError('');
 
     try {
+      // Utiliser l'URL avec le préfixe /api (correction pour erreur 403)
       const data = await apiRequest('/connexion', 'POST', {
         username: email,
         password: password,
       });
 
-      localStorage.setItem('token', data.bearer);
-      console.log('Token saved:', data.bearer);
+      console.log('Réponse de connexion:', data);
+
+      // Extraction et validation des données de réponse
+      const token = data.bearer || (data.data && data.data.bearer);
+      const refresh = data.refresh || (data.data && data.data.refresh);
+      
+      if (!token || !refresh) {
+        throw new Error("Format de réponse invalide");
+      }
+
+      // Stockage des tokens et informations utilisateur
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refresh);
+      localStorage.setItem('email', email);
+      
+      // Stockage du rôle si disponible
+      if (data.role) {
+        localStorage.setItem('role', data.role);
+      }
+      
+      console.log('Connexion réussie');
+      
+      // Démarrer le timer de rafraîchissement de token
+      initTokenRefreshTimer();
+      
+      // Redirection vers la page d'accueil
       navigate('/home');
     } catch (error) {
-      console.error('Erreur:', error.message);
+      console.error('Erreur de connexion:', error);
       setError(error.message || 'Une erreur est survenue lors de la connexion');
     } finally {
       setLoading(false);
@@ -35,7 +69,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    // Implémentation de la connexion Google
+    // Implémentation de la connexion Google (à implémenter)
     alert('Connexion Google simulée !');
   };
 
@@ -88,7 +122,12 @@ const Login = () => {
 
             <div className="form-actions">
               <div className="remember-me">
-                <input type="checkbox" id="remember" />
+                <input 
+                  type="checkbox" 
+                  id="remember"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)} 
+                />
                 <label htmlFor="remember" className="checkbox-label">Se souvenir de moi</label>
               </div>
               <Link to="/reinitialiser" className="forgot-password">

@@ -1,54 +1,100 @@
 /* Style général de la page home */
 .home {
-  max-width: 400px;
+  max-width: 600px; /* Increased width for better layout */
   margin: 60px auto;
   padding: 30px;
-  background-color: rgba(0, 0, 0, 0.6); 
-  backdrop-filter: blur(4px);           
-  border-radius: 12px;
-  color: white;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  color: #2c3e50;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
 
+.home:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
 }
 
 .home h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.6rem;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #0073e6;
+  font-weight: 600;
 }
 
 .hfeatures {
-  display: flex;
-  flex-direction:row;
-  flex-wrap: wrap;
-  gap: 40px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   justify-content: center;
 }
 
 .hfeature-box {
-  width: 100px;
-  height: 80px;
-  background-color: #ffffff98;
-  border: 2px solid #0073e6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f6f9;
+  border: 2px solid #e1e8ed;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  padding: 25px;
   text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
   cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .hfeature-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 115, 230, 0.2);
-  background-color: #f5faff;
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 115, 230, 0.15);
+  border-color: #0073e6;
 }
 
-/* Titre dans les feature-box */
+.hfeature-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(0, 115, 230, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hfeature-box:hover::before {
+  opacity: 1;
+}
+
 .hfeature-box h2 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #0073e6;
-  margin: 0;
+  margin-top: 15px;
+  font-weight: 500;
 }
 
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  color: #0073e6;
+  transition: transform 0.3s ease;
+}
+
+.hfeature-box:hover .feature-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .home {
+      margin: 30px 15px;
+      padding: 20px;
+  }
+
+  .hfeatures {
+      grid-template-columns: 1fr;
+  }
+}

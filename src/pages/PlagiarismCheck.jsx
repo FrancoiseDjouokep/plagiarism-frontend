@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import NavbarB from '../components/NavbarB';
 import { API } from '../utils/api';
-import {isTokenExpired} from '../utils/api';
-import {handleLogout} from '../utils/api';
+import { isTokenExpired } from '../utils/api';
+import { handleLogout } from '../utils/api';
 import '../styles/Layout.css';
 import '../styles/PlagiarismCheck.css';
 
@@ -29,14 +29,14 @@ const PlagiarismCheck = () => {
       setIsLoading(true);
       setResults([]);
       setOverallSimilarity(0);
-            const token = localStorage.getItem('token');
-            if (token && isTokenExpired(token)) {
-              const refreshToken = localStorage.getItem('refreshToken');
-              if (!refreshToken) throw new Error('Session expired');
-              
-              
-              await API.post('/refresh-token', { refresh: refreshToken });
-            }
+
+      const token = localStorage.getItem('token');
+      if (token && isTokenExpired(token)) {
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) throw new Error('Session expired');
+        
+        await API.post('/refresh-token', { refresh: refreshToken });
+      }
 
       const response = await API.post('/api/bigAnalysis', formData, {
         headers: {
@@ -55,16 +55,21 @@ const PlagiarismCheck = () => {
         : "No significant matches found (all similarities < 20%)");
     } catch (error) {
       console.error("Analysis error:", error);
-              if (error.response?.status === 403 || error.message === 'Session expired') {
-                setMessage("Votre session a expiré. Veuillez vous reconnecter.");
-                handleLogout();
-              } else {
-                setMessage(error.response?.data?.message || 
-                  "Analysis failed. Please try again.");
-              }
+      if (error.response?.status === 403 || error.message === 'Session expired') {
+        setMessage("Votre session a expiré. Veuillez vous reconnecter.");
+        handleLogout();
+      } else {
+        setMessage(error.response?.data?.message || 
+          "Analysis failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleViewComparison = (result) => {
+    // TODO: Implement detailed comparison view
+    console.log("View comparison for result:", result);
   };
 
   return (
@@ -82,7 +87,11 @@ const PlagiarismCheck = () => {
             <div className="progress-container">
               <div 
                 className="progress-bar"
-                style={{ width: `${overallSimilarity}%` }}
+                style={{ 
+                  width: `${overallSimilarity}%`,
+                  backgroundColor: overallSimilarity > 50 ? '#e74c3c' : 
+                                   overallSimilarity > 20 ? '#f39c12' : '#2ecc71'
+                }}
               ></div>
             </div>
           </div>
@@ -160,14 +169,18 @@ const PlagiarismCheck = () => {
                       <div className="similarity-visual">
                         <div 
                           className="similarity-bar"
-                          style={{ width: `${result.similarityScore}%` }}
+                          style={{ 
+                            width: `${result.similarityScore}%`,
+                            backgroundColor: result.similarityScore > 50 ? '#e74c3c' : 
+                                             result.similarityScore > 20 ? '#f39c12' : '#2ecc71'
+                          }}
                         ></div>
                       </div>
                     </div>
                     <div className="cell actions-cell">
                       <button 
                         className="view-details"
-                        onClick={() => {/* Implement detail view */}}
+                        onClick={() => handleViewComparison(result)}
                       >
                         View Comparison
                       </button>
