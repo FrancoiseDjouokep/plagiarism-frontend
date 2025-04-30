@@ -8,6 +8,7 @@ import '../styles/Login.css';
 const Register = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
+  const [prenom, setPrenom] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,39 +54,41 @@ const Register = () => {
     }
   
     try {
-      const response = await apiRequest('/inscription', 'POST', {
+      const requestData = {
         nom: name,
+        prenom: prenom,
         email: email,
         password: password
-      });
+      };
   
-      let result;
-      try {
-        result = await response.json();
-      } catch (jsonError) {
-        const text = await response.text();
-        result = { message: text };
-      }
+      console.log('Registration payload:', requestData);
   
-      if (response.ok) {
-        // Redirection avec animation de transition
-        document.querySelector('.login-container').classList.add('success-animation');
-        setTimeout(() => {
-          navigate('/activation', { 
-            state: { email, message: result.message || 'Inscription réussie ! Veuillez entrer votre code OTP.' } 
-          });
-        }, 1000);
-      } else {
-        setError(result.error || result.message || "Erreur lors de l'inscription.");
-      }
+      const response = await apiRequest('/inscription', 'POST', requestData);
+  
+      // Handle successful registration
+      document.querySelector('.login-container').classList.add('success-animation');
+      setTimeout(() => {
+        navigate('/activation', { 
+          state: { 
+            email, 
+            message: response.message || 'Inscription réussie !' 
+          } 
+        });
+      }, 1000);
     } catch (error) {
-      console.error('Erreur réseau :', error);
-      setError('Erreur de connexion au serveur.');
+      console.error('Registration Error:', error);
+      
+      // Extract the most specific error message available
+      const errorMessage = error.response?.data?.message || 
+                         error.response?.data?.error ||
+                         error.message ||
+                         'Erreur lors de l\'inscription';
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-  
   // Rendu des indicateurs de force du mot de passe
   const renderPasswordStrength = () => {
     const levels = ['Faible', 'Moyen', 'Fort', 'Très fort'];
@@ -125,7 +128,7 @@ const Register = () => {
 
           <form onSubmit={handleRegister} className="login-form">
             <div className="form-group">
-              <label htmlFor="name">Nom complet</label>
+              <label htmlFor="name">Nom</label>
               <div className="input-wrapper">
                 <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" />
@@ -135,7 +138,23 @@ const Register = () => {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Entrez votre nom complet"
+                  placeholder="Entrez votre nom "
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="name">Prenom</label>
+              <div className="input-wrapper">
+                <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" />
+                </svg>
+                <input
+                  id="name"
+                  type="text"
+                  value={prenom}
+                  onChange={(e) => setPrenom(e.target.value)}
+                  placeholder="Entrez votre prenom"
                   required
                 />
               </div>

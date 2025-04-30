@@ -19,7 +19,7 @@ const ForgotPassword = () => {
     
     try {
       // Remplacez cette URL par votre endpoint de réinitialisation
-      const response = await apiRequest('/reset-password-request', 'POST', {
+      const response = await apiRequest('/forgot-password', 'POST', {
         email: email
       });
       

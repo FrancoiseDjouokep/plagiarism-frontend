@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NavbarB from '../components/NavbarB';
+import Navbar from '../components/Navbar';
 import {API} from '../utils/api';
 import {isTokenExpired} from '../utils/api';
 import {handleLogout} from '../utils/api';
@@ -67,7 +67,7 @@ const CompareOne = () => {
 
   return (
     <div className="layout">
-      <NavbarB />
+      <Navbar />
     <div className="compare-container">
       <h2>Comparer un fichier avec un document existant</h2>
 

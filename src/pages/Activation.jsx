@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/Activation.css';
+import { apiRequest } from '../utils/api'; // Use your existing apiRequest
 
 const Activation = () => {
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleActivate = async (e) => {
     e.preventDefault();
@@ -16,23 +18,28 @@ const Activation = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/activation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ code: otp}) // ou { code: otp } selon ton backend
+      const response = await apiRequest('/activation', 'POST', {
+        code: otp,
+        email: location.state?.email || '' // Get email from navigation state
+      }, {
+        'X-Requested-With': 'XMLHttpRequest' // Important for some backends
       });
 
-      if (response.ok) {
+      if (response.success) {
         setMessage("Compte activé avec succès !");
-        setTimeout(() => navigate('/login'), 2000);
+        setTimeout(() => navigate('/login', { 
+          state: { message: "Votre compte a été activé avec succès" }
+        }), 2000);
       } else {
-        setMessage("Code incorrect ou expiré.");
+        setMessage(response.message || "Code incorrect ou expiré.");
       }
     } catch (error) {
-      console.error("Erreur lors de l'activation :", error);
-      setMessage("Erreur serveur. Veuillez réessayer.");
+      console.error("Erreur d'activation:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      setMessage(error.response?.data?.message || "Erreur serveur. Veuillez réessayer.");
     }
   };
 

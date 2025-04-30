@@ -4,7 +4,7 @@ import axios from 'axios';
 export const API = axios.create({
   // Pour éviter le double préfixe /api/api, on utilise directement l'URL de base
   baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080',
-  timeout: 10000,
+  timeout: 100000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': '*/*'
@@ -114,53 +114,42 @@ API.interceptors.response.use(
  */
 export const apiRequest = async (url, method = 'GET', data = null, headers = {}) => {
   try {
-    // Assurer que l'URL commence par /api
     const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
-    
-    // Log pour le débogage
-    console.log(`Envoi requête ${method} à: ${apiUrl}`);
-    if (data) console.log('Données:', data);
     
     const config = {
       method,
       url: apiUrl,
       data,
       headers: {
-        ...headers,
-        ...(data instanceof FormData ? {} : { 'Content-Type': 'application/json' })
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...headers
+      },
+      validateStatus: function (status) {
+        return status < 500; // Resolve if status code is less than 500
       }
     };
 
     const response = await API(config);
     
-    // Gestion des différentes structures de réponse
-    const responseData = response.data?.data !== undefined ? response.data.data : response.data;
-    
-    // Vérification des erreurs dans la réponse
-    if (response.data?.success === false) {
-      throw new Error(response.data.message || "Erreur de serveur");
+    if (response.status >= 400) {
+      throw {
+        response,
+        message: response.data?.message || 'Request failed',
+        status: response.status
+      };
     }
-    
-    return responseData;
+
+    return response.data;
   } catch (error) {
-    // Log détaillé pour faciliter le débogage
     console.error("API Error:", {
       url,
       method,
-      data,
       errorStatus: error.response?.status,
-      errorMessage: error.message || "Erreur inconnue",
-      fullError: error.response?.data || error
+      errorData: error.response?.data,
+      config: error.config
     });
-    
-    // Extraction du message d'erreur
-    const errorMessage = 
-      error.response?.data?.message || 
-      error.response?.data?.error ||
-      error.message ||
-      "Erreur de connexion au serveur";
-    
-    throw new Error(errorMessage);
+    throw error;
   }
 };
 

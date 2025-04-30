@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Layout.css';
 import { handleLogout } from '../utils/api';
 
-const Navbar = () => {
+const NavbarB = () => {
   const navigate = useNavigate();
 
 
@@ -19,4 +19,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarB;

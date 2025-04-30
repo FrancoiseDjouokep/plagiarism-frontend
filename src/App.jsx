@@ -17,6 +17,7 @@ import './styles/Layout.css';
 import Activation from './pages/Activation';
 import CompareOne from './pages/CompareOne';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const App = () => {
   // Vérifier l'état d'authentification au chargement de l'application
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/reinitialiser" element={<ForgotPassword />} />
+              <Route path="/password" element={<ResetPassword />} />
               <Route path="/activation" element={<Activation />} />
               
               {/* Routes protégées */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavbarB from '../components/Navbar';
+import Navbar from '../components/Navbar';
 import '../styles/Home.css';
 import '../styles/Layout.css';
 
@@ -48,7 +48,7 @@ const Home = () => {
 
     return(
         <div className="layout">
-            <NavbarB />
+            <Navbar />
             <div className="home">
                 <h2>Acceuil</h2>
                 <section className="hfeatures">

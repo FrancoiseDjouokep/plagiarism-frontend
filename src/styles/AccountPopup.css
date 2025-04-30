@@ -1,0 +1,97 @@
+.account-container {
+    position: relative;
+  }
+  
+  .account-popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 15px;
+    margin-top: 10px;
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .popup-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .close-popup {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .user-info {
+    margin-bottom: 15px;
+  }
+  
+  .info-row {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .info-label {
+    font-weight: bold;
+    width: 80px;
+    color: #555;
+  }
+  
+  .info-value {
+    flex: 1;
+    color: #333;
+  }
+  
+  .popup-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+  }
+  
+  .logout-button {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .logout-button:hover {
+    background: #d32f2f;
+  }
+  
+  .loading-dots {
+    display: inline-block;
+    margin-left: 5px;
+  }
+  
+  .loading-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+  }

@@ -6,36 +6,16 @@ import '../styles/Layout.css';
 import '../styles/Auth.css';
 
 const ResetPassword = () => {
-  const { token } = useParams();
+  const [otp, setOtp] = useState('');
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [tokenValid, setTokenValid] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState(0);
   
-  // Vérification de la validité du token au chargement
-  useEffect(() => {
-    const verifyToken = async () => {
-      try {
-        // Remplacez cette URL par votre endpoint de vérification de token
-        await apiRequest(`/verify-reset-token/${token}`, 'GET');
-      } catch (error) {
-        setTokenValid(false);
-        setError("Ce lien de réinitialisation est invalide ou a expiré. Veuillez demander un nouveau lien.");
-      }
-    };
-    
-    if (token) {
-      verifyToken();
-    } else {
-      setTokenValid(false);
-      setError("Lien de réinitialisation invalide.");
-    }
-  }, [token]);
-  
+
   // Vérification de la force du mot de passe
   const checkPasswordStrength = (password) => {
     let strength = 0;
@@ -76,7 +56,7 @@ const ResetPassword = () => {
     try {
       // Remplacez cette URL par votre endpoint de réinitialisation de mot de passe
       await apiRequest('/reset-password', 'POST', {
-        token: token,
+        code: otp,
         password: password
       });
       
@@ -116,33 +96,6 @@ const ResetPassword = () => {
       </div>
     );
   };
-  
-  // Si le token est invalide, afficher message d'erreur
-  if (!tokenValid) {
-    return (
-      <div className="layout">
-        <Navbar />
-        <div className="auth-page">
-          <div className="auth-container">
-            <div className="error-container">
-              <div className="error-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="#ef4444"/>
-                </svg>
-              </div>
-              <h2 className="error-title">Lien invalide</h2>
-              <p className="error-message">{error}</p>
-              <div className="auth-links centered">
-                <Link to="/reinitialiser" className="auth-button">
-                  Demander un nouveau lien
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
   
   // Si la réinitialisation a réussi
   if (success) {
@@ -189,6 +142,17 @@ const ResetPassword = () => {
           {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit} className="auth-form">
+          <div className=''>  
+          <input
+          type="text"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          maxLength={6}
+          pattern="[0-9]*"
+          placeholder="123456"
+          required
+        />
+        </div>
             <div className="form-group">
               <label htmlFor="password">Nouveau mot de passe</label>
               <div className="input-wrapper">

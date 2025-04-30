@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NavbarB from '../components/NavbarB';
+import Navbar from '../components/Navbar';
 import { API } from '../utils/api';
 import { isTokenExpired } from '../utils/api';
 import { handleLogout } from '../utils/api';
@@ -74,7 +74,7 @@ const PlagiarismCheck = () => {
 
   return (
     <div className="layout">
-      <NavbarB />
+     <Navbar />
       <div className="plagiarism-container">
         <h2>Plagiarism Detection</h2>
         
