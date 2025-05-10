@@ -8,13 +8,15 @@ import { checkAuthStatus } from './utils/api';
 import Login from './pages/Login';
 import Register from './pages/Register'; 
 import Home from './pages/Home';
-import Results from './pages/Results';
+import DetailedResult from './pages/DetailedResultPage';
+import AllDetailedResult from './pages/AllDetailedResult';
 import Landing from './pages/Landing';
 import PlagiarismCheck from './pages/PlagiarismCheck';
 import FileUploadComponent from './pages/FileUploadComponent';
-import Ai_detect from './pages/Ai_detect';
+import AIdetection from './pages/AIDetectionPage';
 import './styles/Layout.css';
 import Activation from './pages/Activation';
+import Oauth2Success from './pages/Oauth2Success'
 import CompareOne from './pages/CompareOne';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -39,14 +41,18 @@ const App = () => {
               <Route path="/reinitialiser" element={<ForgotPassword />} />
               <Route path="/password" element={<ResetPassword />} />
               <Route path="/activation" element={<Activation />} />
+              <Route path="/oauth2-success" element={<Oauth2Success />} />
+
               
               {/* Routes protégées */}
               <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
               <Route path="/check" element={<PrivateRoute><PlagiarismCheck /></PrivateRoute>} />
               <Route path="/compare-one" element={<PrivateRoute><CompareOne /></PrivateRoute>} />
               <Route path="/upload" element={<PrivateRoute><FileUploadComponent /></PrivateRoute>} />
-              <Route path="/ai_detect" element={<PrivateRoute><Ai_detect /></PrivateRoute>} />
-              <Route path="/results" element={<PrivateRoute><Results /></PrivateRoute>} />
+              <Route path="/ai-detection" element={<PrivateRoute><AIdetection /></PrivateRoute>} />
+              <Route path="/detailed-comparison/:id" element={<PrivateRoute><DetailedResult /></PrivateRoute>} />
+              <Route path="/all-detailed-result/:id" element={<PrivateRoute><AllDetailedResult /></PrivateRoute>} />
+
               
               {/* Route fallback */}
               <Route path="*" element={<Landing />} />

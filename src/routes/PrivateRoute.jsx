@@ -9,11 +9,11 @@ import { useAuth } from '../contexts/AuthContext';
  * @returns {React.ReactElement} - Le composant enfant ou redirection vers la page de connexion
  */
 const PrivateRoute = ({ children }) => {
-  // Utilisation du hook useAuth pour accéder au contexte d'authentification
+ 
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
-  // Afficher un indicateur de chargement pendant la vérification de l'authentification
+ 
   if (loading) {
     return (
       <div className="loading-container">
@@ -23,15 +23,15 @@ const PrivateRoute = ({ children }) => {
     );
   }
 
-  // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+ 
   if (!isAuthenticated) {
-    // Sauvegarder l'URL actuelle pour rediriger après connexion
+   
     localStorage.setItem('redirectAfterLogin', location.pathname);
     
     return <Navigate to="/login" replace />;
   }
 
-  // Utilisateur authentifié, afficher le contenu protégé
+ 
   return children;
 };
 

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { API } from '../utils/api';
 import { isTokenExpired } from '../utils/api';
 import { handleLogout } from '../utils/api';
 import '../styles/Layout.css';
 import '../styles/PlagiarismCheck.css';
-
 const PlagiarismCheck = () => {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
@@ -66,15 +66,15 @@ const PlagiarismCheck = () => {
       setIsLoading(false);
     }
   };
+  const navigate = useNavigate();
 
   const handleViewComparison = (result) => {
-    // TODO: Implement detailed comparison view
-    console.log("View comparison for result:", result);
+    navigate(`/detailed-comparison/${result.id}`);
   };
 
   return (
     <div className="layout">
-     <Navbar />
+      <Navbar />
       <div className="plagiarism-container">
         <h2>Plagiarism Detection</h2>
         
@@ -188,11 +188,26 @@ const PlagiarismCheck = () => {
                   </div>
                 ))}
             </div>
+
+            <div className="view-all-button-container">
+              <button 
+                className="view-all-button"
+                onClick={() => {
+                  if (results.length > 0) {
+                    const uploadedDocId = results[0].sourceDocumentId;
+                    window.location.href = `/all-detailed-result/${uploadedDocId}`;
+                  }
+                }}
+              >
+                View All Detailed Results →
+              </button>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
+
 };
 
-export default PlagiarismCheck;
+export default PlagiarismCheck;  

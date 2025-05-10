@@ -1,0 +1,124 @@
+.ai-detection-page {
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ai-detection-container {
+    background-color: white;
+    max-width: 800px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ai-detection-container h2 {
+    color: #1e88e5;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+  }
+  
+  .text-input {
+    width: 100%;
+    min-height: 250px;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    resize: vertical;
+  }
+  
+  .text-input:focus {
+    border-color: #1e88e5;
+    outline: none;
+  }
+  
+  .submit-button {
+    background-color: #1e88e5;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #1565c0;
+  }
+  
+  .submit-button:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+  }
+  
+  .spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid white;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .error-message {
+    color: #d32f2f;
+    background-color: #fde7e7;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .result-container {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .result-container h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 20px;
+  }
+  
+  .ai-result {
+    background-color: #ffebee;
+    border: 2px solid #ef9a9a;
+  }
+  
+  .human-result {
+    background-color: #e8f5e9;
+    border: 2px solid #a5d6a7;
+  }
+  
+  .result-text {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .result-icon {
+    font-size: 24px;
+  }
