@@ -1,67 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { API } from '../utils/api';
 import Navbar from '../components/Navbar';
-import {API} from '../utils/api';
-import {isTokenExpired} from '../utils/api';
-import {handleLogout} from '../utils/api';
 import '../styles/Layout.css';
 import '../styles/CompareOne.css';
 
 const CompareOne = () => {
-  const [targetId, setTargetId] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
   const [file, setFile] = useState(null);
-  const [result, setResult] = useState(null);
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [manualSelection, setManualSelection] = useState(false);
+  // Recherche des documents en temps réel
+  useEffect(() => {
+    if (manualSelection) {
+      setManualSelection(false); // Ne faire la recherche qu’une seule fois
+      return;
+    }
+  
+    const searchDocuments = async () => {
+      if (searchTerm.length < 2) {
+        setSearchResults([]);
+        return;
+      }
+  
+      try {
+        const response = await API.get(`/api/documents/search`, {
+          params: { query: searchTerm }
+        });
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Erreur de recherche:", error);
+        setSearchResults([]);
+      }
+    };
+  
+    const timer = setTimeout(searchDocuments, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);  
 
   const handleCompare = async () => {
-    if (!file || !targetId.trim()) {
-      setMessage("Veuillez sélectionner un fichier et entrer un ID de document cible.");
+    if (!file || !selectedDocument) {
+      setMessage("Veuillez sélectionner un fichier et un document cible");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("title", "Document à comparer");
-    formData.append("id", targetId);
+    formData.append("title", file.name);
+    formData.append("targetTitle", selectedDocument.title);
 
     try {
-      setMessage("Analyse en cours...");
       setIsLoading(true);
-      setResult(null);
-
-      const token = localStorage.getItem('token');
-      if (token && isTokenExpired(token)) {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken) throw new Error('Session expired');
-        
-       
-        await API.post('/refresh-token', { refresh: refreshToken });
-      }
-      const response = await API.post('/api/analysis', formData, {
+      setMessage("Comparaison en cours...");
+      
+      const response = await API.post('/api/analysis/compare-by-title', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data'
         }
       });
-
-      setResult(response.data);
-      setMessage('');
+      setMessage(`Similarité trouvée: ${response.data.similarityScore.toFixed(2)}%`);
     } catch (error) {
-      console.error("Erreur de comparaison :", error);
-      if (error.response?.status === 403 || error.message === 'Session expired') {
-        setMessage("Votre session a expiré. Veuillez vous reconnecter.");
-        handleLogout();
-      } else {
-        setMessage(error.response?.data?.message || "La comparaison a échoué.");
-      }
+      setMessage(error.response?.data?.message || "Erreur lors de la comparaison");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
     }
   };
 
@@ -69,68 +72,62 @@ const CompareOne = () => {
     <div className="layout">
       <Navbar />
     <div className="compare-container">
-      <h2>Comparer un fichier avec un document existant</h2>
+      <h2>Comparer avec un document existant</h2>
 
-      <div className="form-group">
-        <label htmlFor="targetId">ID du document cible:</label>
+      <div className="search-box">
+        <label>Rechercher un document par titre:</label>
         <input
-          id="targetId"
-          type="number"
-          value={targetId}
-          onChange={(e) => {
-            console.log('ID input:', e.target.value); 
-            setTargetId(e.target.value);
-          }}
-          placeholder="Ex: 12"
-          min="1"
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Commencez à taper un titre..."
         />
-        {targetId && <span>Entered ID: {targetId}</span>}
+        
+        {searchResults.length > 0 && (
+          <ul className="results-dropdown">
+            {searchResults.map(doc => (
+              <li
+              key={doc.id}
+              onClick={() => {
+                setSelectedDocument(doc);
+                setSearchTerm(doc.title);
+                setSearchResults([]);
+                setManualSelection(true); // Empêche useEffect de relancer la recherche
+              }}              
+              className="search-result-item"
+            >
+              {doc.title}
+              <span className="doc-meta">ID: {doc.id}</span>
+            </li>
+            
+            ))}
+          </ul>
+        )}
       </div>
 
-      {/* File Input */}
-      <div className="form-group">
-        <label htmlFor="fileInput">Choisir un fichier à comparer:</label>
-        <input
-          id="fileInput"
-          type="file"
+      {selectedDocument && (
+        <div className="selected-doc">
+          <strong>Document sélectionné:</strong> {selectedDocument.title}
+        </div>
+      )}
+
+      <div className="file-upload">
+        <label>Fichier à comparer:</label>
+        <input 
+          type="file" 
+          onChange={(e) => setFile(e.target.files[0])} 
           accept=".pdf,.doc,.docx,.txt"
-          onChange={handleFileChange}
         />
-        {file && <span>Selected file: {file.name}</span>}
       </div>
 
       <button 
-        onClick={handleCompare} 
-        disabled={isLoading || !file || !targetId.trim()}
+        onClick={handleCompare}
+        disabled={!file || !selectedDocument || isLoading}
       >
-        {isLoading ? 'Comparaison en cours...' : 'Comparer'}
+        {isLoading ? 'En cours...' : 'Comparer'}
       </button>
 
-      {message && <p className={`message ${isLoading ? 'info' : 'error'}`}>{message}</p>}
-
-      {result && (
-        <div className="result-box">
-          <h3>Résultat de la comparaison</h3>
-          <div className="result-line">
-            <strong>Similarité :</strong>
-            <span>{result.similarityScore?.toFixed(2) ?? 'N/A'}%</span>
-          </div>
-          <div className="progress-bar">
-            <div 
-              className="progress-fill" 
-              style={{ width: `${result.similarityScore ?? 0}%` }}
-            ></div>
-          </div>
-          <div className="result-line">
-            <strong>ID cible :</strong>
-            <span>#{result.targetDocumentId ?? 'N/A'}</span>
-          </div>
-          <div className="result-line">
-            <strong>ID document analysé :</strong>
-            <span>#{result.sourceDocumentId ?? 'N/A'}</span>
-          </div>
-        </div>
-      )}
+      {message && <div className="message">{message}</div>}
     </div>
     </div>
   );

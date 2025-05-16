@@ -1,0 +1,71 @@
+.report-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.section {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.source-text {
+  white-space: pre-wrap;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #444;
+}
+
+.block {
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.source-phrase {
+  font-weight: bold;
+  color: #b30000;
+  margin-bottom: 10px;
+}
+
+.matches h4 {
+  margin-top: 10px;
+  color: #333;
+}
+
+.matched-phrase {
+  color: #004085;
+  font-style: italic;
+}
+
+.document-ref {
+  color: #6c757d;
+  font-size: 0.9em;
+}
+
+.no-match {
+  color: #999;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-weight: bold;
+} 
