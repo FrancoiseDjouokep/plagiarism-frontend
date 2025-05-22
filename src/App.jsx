@@ -4,10 +4,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
 import { checkAuthStatus } from './utils/api';
 
-// Pages
 import Login from './pages/Login';
 import Register from './pages/Register'; 
 import Home from './pages/Home';
+import Home_Student from './pages/Home_Student';
 import DetailedResult from './pages/DetailedResultPage';
 import AllDetailedResult from './pages/AllDetailedResult';
 import Landing from './pages/Landing';
@@ -20,6 +20,8 @@ import Oauth2Success from './pages/Oauth2Success'
 import CompareOne from './pages/CompareOne';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Validation from './pages/Validation';
+import AdminValidationPage from './pages/AdminValidationPage';
 
 const App = () => {
   // Vérifier l'état d'authentification au chargement de l'application
@@ -41,11 +43,14 @@ const App = () => {
               <Route path="/reinitialiser" element={<ForgotPassword />} />
               <Route path="/password" element={<ResetPassword />} />
               <Route path="/activation" element={<Activation />} />
+              <Route path="/validation" element={<Validation />} />
               <Route path="/oauth2-success" element={<Oauth2Success />} />
 
               
               {/* Routes protégées */}
+              <Route path="/admin" element={<PrivateRoute><AdminValidationPage /></PrivateRoute>} />
               <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+              <Route path="/home-student" element={<PrivateRoute><Home_Student /></PrivateRoute>} />
               <Route path="/check" element={<PrivateRoute><PlagiarismCheck /></PrivateRoute>} />
               <Route path="/compare-one" element={<PrivateRoute><CompareOne /></PrivateRoute>} />
               <Route path="/upload" element={<PrivateRoute><FileUploadComponent /></PrivateRoute>} />

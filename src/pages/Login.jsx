@@ -18,9 +18,23 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token && !isTokenExpired(token)) {
-      navigate('/home');
+      const role = localStorage.getItem('role');
+      redirectBasedOnRole(role);
     }
   }, [navigate]);
+
+  const redirectBasedOnRole = (role) => {
+    const normalizedRole = role?.trim().toUpperCase();
+    if (normalizedRole === 'ETUDIANT') {
+      navigate('/home-student');
+    } 
+    if (normalizedRole === 'ENSEIGNANT') {
+      navigate('/home');
+    } 
+    if (normalizedRole === 'ADMIN') {
+      navigate('/admin');
+    } 
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,39 +42,27 @@ const Login = () => {
     setError('');
 
     try {
-      // Utiliser l'URL avec le préfixe /api (correction pour erreur 403)
       const data = await apiRequest('/connexion', 'POST', {
         username: email,
         password: password,
       });
 
-      console.log('Réponse de connexion:', data);
-
-      // Extraction et validation des données de réponse
       const token = data.bearer || (data.data && data.data.bearer);
       const refresh = data.refresh || (data.data && data.data.refresh);
-      
+      const role = data.role || (data.data && data.data.role);
+
       if (!token || !refresh) {
         throw new Error("Format de réponse invalide");
       }
 
-      // Stockage des tokens et informations utilisateur
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refresh);
       localStorage.setItem('email', email);
-      
-      // Stockage du rôle si disponible
-      if (data.role) {
-        localStorage.setItem('role', data.role);
-      }
-      
-      console.log('Connexion réussie');
-      
-      // Démarrer le timer de rafraîchissement de token
+      localStorage.setItem('role', role);
+
       initTokenRefreshTimer();
+      redirectBasedOnRole(role);
       
-      // Redirection vers la page d'accueil
-      navigate('/home');
     } catch (error) {
       console.error('Erreur de connexion:', error);
       setError(error.message || 'Une erreur est survenue lors de la connexion');
@@ -68,7 +70,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-  
 
   // Check for OAuth success/failure
   useEffect(() => {
