@@ -22,6 +22,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Validation from './pages/Validation';
 import AdminValidationPage from './pages/AdminValidationPage';
+import History from './pages/History';
 
 const App = () => {
   // Vérifier l'état d'authentification au chargement de l'application
@@ -51,6 +52,7 @@ const App = () => {
               <Route path="/admin" element={<PrivateRoute><AdminValidationPage /></PrivateRoute>} />
               <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
               <Route path="/home-student" element={<PrivateRoute><Home_Student /></PrivateRoute>} />
+              <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
               <Route path="/check" element={<PrivateRoute><PlagiarismCheck /></PrivateRoute>} />
               <Route path="/compare-one" element={<PrivateRoute><CompareOne /></PrivateRoute>} />
               <Route path="/upload" element={<PrivateRoute><FileUploadComponent /></PrivateRoute>} />

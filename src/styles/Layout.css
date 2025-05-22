@@ -217,6 +217,20 @@ body, html {
 .menu-toggle.active span:nth-child(3) {
   transform: translateY(-10px) rotate(-45deg);
 }
+.history-page {
+  padding: 2rem;
+  background-color: white;
+}
+
+.history-page ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.history-page li {
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 0;
+}
 
 /* Espace contenu principal */
 .main-content {

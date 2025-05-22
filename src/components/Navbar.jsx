@@ -26,7 +26,7 @@ const Navbar = () => {
       const response = await apiRequest('/me', 'GET', null, {
         'Authorization': `Bearer ${token}`
       });
-      
+
       setUserData(response);
       setAccountPopupOpen(true);
     } catch (error) {
@@ -65,7 +65,7 @@ const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -74,21 +74,21 @@ const Navbar = () => {
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
-  
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
-  
+
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <h1><b>PLAGIRIX</b></h1>
-      
+
       <button className={`menu-toggle ${menuOpen ? 'active' : ''}`} onClick={toggleMenu} aria-label="Menu">
         <span></span>
         <span></span>
         <span></span>
       </button>
-      
+
       <ul className={menuOpen ? 'active' : ''}>
         <li>
           <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>
@@ -100,9 +100,15 @@ const Navbar = () => {
             Fonctionnalités
           </Link>
         </li>
+        <li>
+          <Link to="/history" className={location.pathname === '/history' ? 'active' : ''}>
+            Historique
+          </Link>
+        </li>
+
         <li className="account-container">
-          <Link 
-            to="#" 
+          <Link
+            to="#"
             className="account-link"
             onClick={handleAccountClick}
           >
@@ -113,15 +119,15 @@ const Navbar = () => {
             Mon compte
             {loading && <span className="loading-dots">...</span>}
           </Link>
-          
+
           {accountPopupOpen && (
             <div className="account-popup">
               {userData ? (
                 <>
                   <div className="popup-header">
                     <h3>Mon compte</h3>
-                    <button 
-                      className="close-popup" 
+                    <button
+                      className="close-popup"
                       onClick={() => setAccountPopupOpen(false)}
                       aria-label="Fermer"
                     >
@@ -143,7 +149,7 @@ const Navbar = () => {
                     </div>
                   </div>
                   <div className="popup-footer">
-                    <button 
+                    <button
                       className="logout-button"
                       onClick={handleLogout}
                     >
