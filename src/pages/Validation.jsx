@@ -24,15 +24,17 @@ const Validation = () => {
       }, {
         'X-Requested-With': 'XMLHttpRequest' // Important for some backends
       });
+      console.log("Réponse brute:", response);
 
-      if (response.success) {
-        setMessage("Compte verifier avec succès !");
+      if (response.success || response.status === 200 || response.message?.includes("succès")) {
+        setMessage("Compte vérifié avec succès ! Veuillez patienter pour la validation par l'admin. Vous recevrez un mail de confirmation");
         setTimeout(() => navigate('/login', { 
-          state: { message: "Votre compte a été verifier avec succès, veillez patienter pour la validation par l'admin" }
-        }), 50000);
+          state: { message: "Votre compte a été vérifié avec succès, veuillez patienter pour la validation par l'admin." }
+        }), 5000);
       } else {
         setMessage(response.message || "Code incorrect ou expiré.");
       }
+      
     } catch (error) {
       console.error("Erreur d'activation:", {
         status: error.response?.status,

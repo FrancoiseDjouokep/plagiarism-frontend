@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { API } from '../utils/api';
@@ -6,13 +6,26 @@ import { isTokenExpired } from '../utils/api';
 import { handleLogout } from '../utils/api';
 import '../styles/Layout.css';
 import '../styles/PlagiarismCheck.css';
+import { useAnalysis } from '../contexts/AnalysisContext';
+
 const PlagiarismCheck = () => {
+  const { analysisState, setAnalysisState } = useAnalysis();
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [overallSimilarity, setOverallSimilarity] = useState(0);
+
+  useEffect(() => {
+    if (analysisState.results && analysisState.results.length > 0) {
+      setResults(analysisState.results);
+      setOverallSimilarity(analysisState.overallSimilarity);
+      setMessage(analysisState.message);
+      setTitle(analysisState.title);
+      setFile(analysisState.file);
+    }
+  }, [analysisState]);
 
   const handleAnalyze = async () => {
     if (!file) {
@@ -34,7 +47,7 @@ const PlagiarismCheck = () => {
       if (token && isTokenExpired(token)) {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) throw new Error('Session expired');
-        
+
         await API.post('/refresh-token', { refresh: refreshToken });
       }
 
@@ -44,7 +57,7 @@ const PlagiarismCheck = () => {
         }
       });
 
-      const maxSimilarity = response.data.length > 0 
+      const maxSimilarity = response.data.length > 0
         ? Math.max(...response.data.map(r => r.similarityScore))
         : 0;
 
@@ -53,13 +66,22 @@ const PlagiarismCheck = () => {
       setMessage(response.data.length > 0
         ? `Analysis complete (${response.data.length} matches found)`
         : "No significant matches found (all similarities < 20%)");
+      setAnalysisState({
+        file,
+        title,
+        results: response.data,
+        overallSimilarity: maxSimilarity,
+        message: response.data.length > 0
+          ? `Analysis complete (${response.data.length} matches found)`
+          : "No significant matches found (all similarities < 20%)"
+      });
     } catch (error) {
       console.error("Analysis error:", error);
       if (error.response?.status === 403 || error.message === 'Session expired') {
         setMessage("Votre session a expiré. Veuillez vous reconnecter.");
         handleLogout();
       } else {
-        setMessage(error.response?.data?.message || 
+        setMessage(error.response?.data?.message ||
           "Analysis failed. Please try again.");
       }
     } finally {
@@ -72,12 +94,31 @@ const PlagiarismCheck = () => {
     navigate(`/detailed-comparison/${result.id}`);
   };
 
+  const clearAnalysis = () => {
+    setAnalysisState({
+      file: null,
+      title: '',
+      results: [],
+      overallSimilarity: 0,
+      message: ''
+    });
+    setFile(null);
+    setTitle('');
+    setMessage('');
+    setResults([]);
+    setOverallSimilarity(0);
+  };
+
   return (
     <div className="layout">
       <Navbar />
       <div className="plagiarism-container">
         <h2>Plagiarism Detection</h2>
-        
+        {results.length > 0 && (
+          <button onClick={clearAnalysis} className="clear-analysis-button">
+            Clear Analysis
+          </button>
+        )}
         <div className="summary-card">
           <h3>Document Analysis Summary</h3>
           <div className="similarity-display">
@@ -85,12 +126,12 @@ const PlagiarismCheck = () => {
               Highest Similarity: {overallSimilarity.toFixed(2)}%
             </div>
             <div className="progress-container">
-              <div 
+              <div
                 className="progress-bar"
-                style={{ 
+                style={{
                   width: `${overallSimilarity}%`,
-                  backgroundColor: overallSimilarity > 50 ? '#e74c3c' : 
-                                   overallSimilarity > 20 ? '#f39c12' : '#2ecc71'
+                  backgroundColor: overallSimilarity > 50 ? '#e74c3c' :
+                    overallSimilarity > 20 ? '#f39c12' : '#2ecc71'
                 }}
               ></div>
             </div>
@@ -128,7 +169,7 @@ const PlagiarismCheck = () => {
             )}
           </div>
 
-          <button 
+          <button
             onClick={handleAnalyze}
             disabled={isLoading || !file}
             className="analyze-button"
@@ -153,7 +194,7 @@ const PlagiarismCheck = () => {
                 <div className="header-cell">Similarity Score</div>
                 <div className="header-cell">Details</div>
               </div>
-              
+
               {results
                 .sort((a, b) => b.similarityScore - a.similarityScore)
                 .map((result, index) => (
@@ -167,18 +208,18 @@ const PlagiarismCheck = () => {
                     <div className="cell similarity-cell">
                       <div className="score-value">{result.similarityScore.toFixed(2)}%</div>
                       <div className="similarity-visual">
-                        <div 
+                        <div
                           className="similarity-bar"
-                          style={{ 
+                          style={{
                             width: `${result.similarityScore}%`,
-                            backgroundColor: result.similarityScore > 50 ? '#e74c3c' : 
-                                             result.similarityScore > 20 ? '#f39c12' : '#2ecc71'
+                            backgroundColor: result.similarityScore > 50 ? '#e74c3c' :
+                              result.similarityScore > 20 ? '#f39c12' : '#2ecc71'
                           }}
                         ></div>
                       </div>
                     </div>
                     <div className="cell actions-cell">
-                      <button 
+                      <button
                         className="view-details"
                         onClick={() => handleViewComparison(result)}
                       >

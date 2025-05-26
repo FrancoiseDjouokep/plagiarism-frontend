@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { apiRequest } from '../utils/api';
 import Navbar from '../components/Navbar';
 import '../styles/Layout.css';
-import '../styles/Login.css'; 
+import '../styles/Login.css';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,16 +16,19 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+
   // Vérification de la force du mot de passe
   const checkPasswordStrength = (password) => {
     let strength = 0;
-    
+
     if (password.length >= 8) strength += 1;
     if (/[A-Z]/.test(password)) strength += 1;
     if (/[0-9]/.test(password)) strength += 1;
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    
+
     setPasswordStrength(strength);
     return strength;
   };
@@ -40,20 +43,20 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     // Validation
     if (password !== confirmPassword) {
       setError('Les mots de passe ne correspondent pas');
       setLoading(false);
       return;
     }
-    
+
     if (checkPasswordStrength(password) < 3) {
       setError('Votre mot de passe n\'est pas assez sécurisé');
       setLoading(false);
       return;
     }
-  
+
     try {
       const requestData = {
         nom: name,
@@ -62,14 +65,14 @@ const Register = () => {
         password: password,
         role: role // Ajout du rôle dans les données envoyées
       };
-    
+
       console.log('Registration payload:', requestData);
-    
+
       const response = await apiRequest('/inscription', 'POST', requestData);
-    
+
       // Animation de succès
       document.querySelector('.login-container').classList.add('success-animation');
-    
+
       setTimeout(() => {
         if (role === 'ETUDIANT') {
           navigate('/activation', {
@@ -88,15 +91,15 @@ const Register = () => {
         }
       }, 1000);
     }
-     catch (error) {
+    catch (error) {
       console.error('Registration Error:', error);
-      
+
       // Extract the most specific error message available
-      const errorMessage = error.response?.data?.message || 
-                         error.response?.data?.error ||
-                         error.message ||
-                         'Erreur lors de l\'inscription';
-      
+      const errorMessage = error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Erreur lors de l\'inscription';
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -107,20 +110,20 @@ const Register = () => {
   const renderPasswordStrength = () => {
     const levels = ['Faible', 'Moyen', 'Fort', 'Très fort'];
     const colors = ['#ef4444', '#f59e0b', '#84cc16', '#10b981'];
-    
+
     return (
       <div className="password-strength">
         <div className="strength-bars">
           {[...Array(4)].map((_, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`strength-bar ${index < passwordStrength ? 'active' : ''}`}
-              style={{backgroundColor: index < passwordStrength ? colors[passwordStrength - 1] : undefined}}
+              style={{ backgroundColor: index < passwordStrength ? colors[passwordStrength - 1] : undefined }}
             ></div>
           ))}
         </div>
         {password && (
-          <span style={{color: colors[passwordStrength - 1 >= 0 ? passwordStrength - 1 : 0]}}>
+          <span style={{ color: colors[passwordStrength - 1 >= 0 ? passwordStrength - 1 : 0] }}>
             {password ? levels[passwordStrength - 1 >= 0 ? passwordStrength - 1 : 0] : ''}
           </span>
         )}
@@ -210,8 +213,8 @@ const Register = () => {
                 </select>
               </div>
               <p className="role-hint">
-                {role === 'ETUDIANT' 
-                  ? "Les comptes étudiants sont activés immédiatement" 
+                {role === 'ETUDIANT'
+                  ? "Les comptes étudiants sont activés immédiatement"
                   : "Les comptes enseignants nécessitent une validation administrative"}
               </p>
             </div>
@@ -219,18 +222,25 @@ const Register = () => {
             <div className="form-group">
               <label htmlFor="password">Mot de passe</label>
               <div className="input-wrapper">
-                <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg className="input-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15 8H9V6C9 4.34 10.34 3 12 3C13.66 3 15 4.34 15 6V8Z" />
                 </svg>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={handlePasswordChange}
                   placeholder="Créez un mot de passe"
                   required
                 />
+                <span
+                  className="toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "👁️" : "🙈"}
+                </span>
               </div>
+
               {renderPasswordStrength()}
               <p className="password-hint">Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.</p>
             </div>
@@ -238,18 +248,25 @@ const Register = () => {
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
               <div className="input-wrapper">
-                <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg className="input-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15 8H9V6C9 4.34 10.34 3 12 3C13.66 3 15 4.34 15 6V8Z" />
                 </svg>
                 <input
                   id="confirmPassword"
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirmez votre mot de passe"
                   required
                 />
+                <span
+                  className="toggle-password"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? "👁️" : "🙈"}
+                </span>
               </div>
+
             </div>
 
             <div className="terms-privacy">
@@ -259,8 +276,8 @@ const Register = () => {
               </label>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="login-button register-button"
               disabled={loading}
             >

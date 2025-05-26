@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import "../styles/AdminDashboard.css";
 import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import '../styles/Layout.css';
 
 function AdminValidationPage() {
@@ -61,7 +62,7 @@ function AdminValidationPage() {
     const raison = prompt("Raison du rejet :", "Profil non conforme");
     if (raison !== null) {
       try {
-        await axios.post(`/rejeter-inscription/${id}`, { raison }, { // ✅ Envoie la raison
+        await axios.post(`http://localhost:8080/api/admin/rejeter-inscription/${id}`, { raison }, { // ✅ Envoie la raison
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessage("❌ Inscription rejetée !");
@@ -75,50 +76,53 @@ function AdminValidationPage() {
   return (
     <div className="layout">
       <Navbar />
-      <div className="admin-container">
-        <h1>Validation des inscriptions</h1>
+      <div style={{ display: "flex" }}>
+        <Sidebar />
+        <div className="admin-container" style={{ marginLeft: "220px", padding: "20px", width: "100%" }}>
+          <h1>Validation des inscriptions</h1>
 
-        {message && <p className="admin-message">{message}</p>}
+          {message && <p className="admin-message">{message}</p>}
 
-        {loading ? (
-          <p>Chargement...</p>
-        ) : !Array.isArray(pendingUsers) || pendingUsers.length === 0 ? (
-          <p>Aucune demande en attente.</p>
-        ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Email</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.nom}</td>
-                  <td>{user.prenom}</td>
-                  <td>{user.email}</td>
-                  <td>
-                    <button
-                      className="btn btn-validate"
-                      onClick={() => validerInscription(user.id)}
-                    >
-                      Valider
-                    </button>
-                    <button
-                      className="btn btn-reject"
-                      onClick={() => rejeterInscription(user.id)}
-                    >
-                      Rejeter
-                    </button>
-                  </td>
+          {loading ? (
+            <p>Chargement...</p>
+          ) : !Array.isArray(pendingUsers) || pendingUsers.length === 0 ? (
+            <p>Aucune demande en attente.</p>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Email</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {pendingUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.nom}</td>
+                    <td>{user.prenom}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      <button
+                        className="btn btn-validate"
+                        onClick={() => validerInscription(user.id)}
+                      >
+                        Valider
+                      </button>
+                      <button
+                        className="btn btn-reject"
+                        onClick={() => rejeterInscription(user.id)}
+                      >
+                        Rejeter
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );

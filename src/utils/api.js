@@ -115,7 +115,7 @@ API.interceptors.response.use(
 export const apiRequest = async (url, method = 'GET', data = null, headers = {}) => {
   try {
     const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
-    
+
     const config = {
       method,
       url: apiUrl,
@@ -131,7 +131,7 @@ export const apiRequest = async (url, method = 'GET', data = null, headers = {})
     };
 
     const response = await API(config);
-    
+
     if (response.status >= 400) {
       throw {
         response,
@@ -140,7 +140,17 @@ export const apiRequest = async (url, method = 'GET', data = null, headers = {})
       };
     }
 
+    // 🔧 FORCER UN OBJET SI LA RÉPONSE EST UNE STRING
+    if (typeof response.data === 'string') {
+      return {
+        success: response.status >= 200 && response.status < 300,
+        message: response.data
+      };
+    }
+
+    // ✅ Cas normal : déjà un objet
     return response.data;
+
   } catch (error) {
     console.error("API Error:", {
       url,
@@ -152,6 +162,7 @@ export const apiRequest = async (url, method = 'GET', data = null, headers = {})
     throw error;
   }
 };
+
 
 /**
  * Fonction de déconnexion - efface le stockage local et redirige vers la page de connexion

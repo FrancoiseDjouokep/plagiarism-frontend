@@ -69,6 +69,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   overflow: hidden;
+  white-space: pre-wrap;
 }
 
 .match-header {
@@ -84,6 +85,16 @@
 .match-content {
   padding: 15px;
 }
+
+/* Ajoutez ce style */
+.highlighted-block {
+  background-color: #fff9c4; /* Jaune clair */
+  display: inline-block;
+  padding: 2px 4px;
+  margin: 2px 0;
+  border-radius: 3px;
+}
+
 
 .highlighted {
   background-color: #fffde7;
