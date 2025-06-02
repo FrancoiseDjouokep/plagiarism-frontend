@@ -23,6 +23,11 @@ const Sidebar = () => {
             🕒 View Pending Users
           </Link>
         </li>
+        <li className={location.pathname.includes("home") ? "active" : ""}>
+          <Link to="/home">
+            📈 Analyse/Upload
+          </Link>
+        </li>
       </ul>
     </div>
   );

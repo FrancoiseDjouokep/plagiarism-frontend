@@ -40,7 +40,7 @@ const AIDetectionPage = () => {
           <form onSubmit={handleSubmit}>
             <textarea
               className="text-input"
-              placeholder="Enter text to analyze (minimum 50 characters)"
+              placeholder="Enter text to analyze (minimum 500 characters)"
               value={text}
               onChange={(e) => setText(e.target.value)}
               minLength={50}

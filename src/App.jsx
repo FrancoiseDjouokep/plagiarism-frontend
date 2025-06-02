@@ -26,6 +26,7 @@ import History from './pages/History';
 import ViewAllUsers from './pages/ViewAllUsers';
 import ViewAllAnalysis from './pages/ViewAllAnalysis';
 import { AnalysisProvider } from './contexts/AnalysisContext';
+import FeaturesPage from './pages/FeaturesPage';
 
 const App = () => {
   // Vérifier l'état d'authentification au chargement de l'application
@@ -59,6 +60,7 @@ const App = () => {
                 <Route path="/all-analyses" element={<PrivateRoute><ViewAllAnalysis /></PrivateRoute>} />
                 <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
                 <Route path="/home-student" element={<PrivateRoute><Home_Student /></PrivateRoute>} />
+                <Route path="/features" element={<PrivateRoute><FeaturesPage /></PrivateRoute>} />
                 <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
                 <Route path="/check" element={<PrivateRoute><PlagiarismCheck /></PrivateRoute>} />
                 <Route path="/compare-one" element={<PrivateRoute><CompareOne /></PrivateRoute>} />

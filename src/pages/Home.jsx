@@ -8,8 +8,8 @@ const Home = () => {
     const navigate = useNavigate();
 
     const features = [
-        { 
-            title: 'Plagiarism Check', 
+        {
+            title: 'Plagiarism Check',
             route: '/check',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -17,45 +17,46 @@ const Home = () => {
                 </svg>
             )
         },
-        { 
-            title: 'Compare One', 
+        {
+            title: 'Compare One',
             route: '/compare-one',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553 4.553a1 1 0 010 1.414l-1.414 1.414a1 1 0 01-1.414 0L12 13m3-3a6 6 0 11-12 0 6 6 0 0112 0z" />
                 </svg>
             )
         },
-        { 
-            title: 'Upload Document', 
+        {
+            title: 'Upload Document',
             route: '/upload',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
                 </svg>
             )
         },
-        { 
-            title: 'AI Detect', 
+        {
+            title: 'AI Detect',
             route: '/ai-detection',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 4a3 3 0 00-6 0v1H6a2 2 0 00-2 2v2.5a2 2 0 002 2V17a3 3 0 006 0m1-13a3 3 0 016 0v1h1a2 2 0 012 2v2.5a2 2 0 01-2 2V17a3 3 0 01-6 0" />
                 </svg>
             )
         }
+
     ];
 
-    return(
+    return (
         <div className="layout">
             <Navbar />
             <div className="home">
                 <h2>Acceuil</h2>
                 <section className="hfeatures">
                     {features.map((feature, index) => (
-                        <div 
-                            key={index} 
-                            className="hfeature-box" 
+                        <div
+                            key={index}
+                            className="hfeature-box"
                             onClick={() => navigate(feature.route)}
                         >
                             {feature.icon}

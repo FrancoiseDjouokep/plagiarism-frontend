@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/Layout.css';
-import '../styles/Table.css'; // Ajoute ce fichier pour styliser le tableau
+import '../styles/Table.css';
 
 const History = () => {
   const [analyses, setAnalyses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAnalyses = async () => {
@@ -25,6 +27,10 @@ const History = () => {
     fetchAnalyses();
   }, []);
 
+  const handleRowClick = (id) => {
+    navigate(`/detailed-comparison/${id}`);
+  };
+
   return (
     <div className="layout">
       <Navbar />
@@ -42,7 +48,7 @@ const History = () => {
             </thead>
             <tbody>
               {analyses.map((a, index) => (
-                <tr key={index}>
+                <tr key={index} onClick={() => handleRowClick(a.id)} className="clickable-row">
                   <td>{a.sourceDocumentTitle || a.sourceDocumentId}</td>
                   <td>{a.targetDocumentTitle || a.targetDocumentId}</td>
                   <td>{Math.round(a.similarityScore)}%</td>

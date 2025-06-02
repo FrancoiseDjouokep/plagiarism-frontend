@@ -15,11 +15,19 @@ const Navbar = () => {
 
   const userRole = localStorage.getItem('role');
 
-  // Determine home path based on role
   const getHomePath = () => {
-    return userRole === 'ETUDIANT' ? '/home-student' : '/home';
+    switch (userRole) {
+      case 'ETUDIANT':
+        return '/home-student';
+      case 'ENSEIGNANT':
+        return '/home';
+      case 'ADMIN':
+        return '/admin';
+      default:
+        return '/'; 
+    }
   };
-  // Fonction pour récupérer les infos utilisateur
+
   const fetchUserData = async () => {
     setLoading(true);
     try {
@@ -99,7 +107,7 @@ const Navbar = () => {
        <li>
           <Link 
             to={getHomePath()} 
-            className={location.pathname === '/home' || location.pathname === '/home-student' ? 'active' : ''}
+            className={location.pathname === '/home' || location.pathname === '/home-student' || location.pathname === '/admin' ? 'active' : ''}
           >
             Accueil
           </Link>
