@@ -10,22 +10,22 @@ const Sidebar = () => {
       <ul>
         <li className={location.pathname.includes("all-users") ? "active" : ""}>
           <Link to="/all-users">
-            👤 View All Users
+            👤 Utilisateurs
           </Link>
         </li>
         <li className={location.pathname.includes("all-analyses") ? "active" : ""}>
           <Link to="/all-analyses">
-            📄 View All Analysis
+            📄 Historique d'analyses
           </Link>
         </li>
         <li className={location.pathname.includes("admin") ? "active" : ""}>
           <Link to="/admin">
-            🕒 View Pending Users
+            🕒 Inscriptions_attentes
           </Link>
         </li>
         <li className={location.pathname.includes("home") ? "active" : ""}>
           <Link to="/home">
-            📈 Analyse/Upload
+            📈 Analyse/Téléversement
           </Link>
         </li>
       </ul>

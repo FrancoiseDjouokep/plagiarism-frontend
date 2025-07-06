@@ -95,7 +95,7 @@ const Navbar = () => {
 
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <h1><b>PLAGIRIX</b></h1>
+      <h1><b>PLAGIARIX</b></h1>
 
       <button className={`menu-toggle ${menuOpen ? 'active' : ''}`} onClick={toggleMenu} aria-label="Menu">
         <span></span>

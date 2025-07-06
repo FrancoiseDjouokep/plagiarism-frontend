@@ -18,7 +18,7 @@ function AdminValidationPage() {
 
   const fetchPendingUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/admin/pending-users', {
+      const response = await axios.get('http://192.99.42.107:8090/api/admin/pending-users', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -46,7 +46,7 @@ function AdminValidationPage() {
 
   const validerInscription = async (id) => {
     try {
-      await axios.post(`http://localhost:8080/api/admin/valider-inscription/${id}`, {}, {
+      await axios.post(`http://192.99.42.107:8090/api/admin/valider-inscription/${id}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -62,7 +62,7 @@ function AdminValidationPage() {
     const raison = prompt("Raison du rejet :", "Profil non conforme");
     if (raison !== null) {
       try {
-        await axios.post(`http://localhost:8080/api/admin/rejeter-inscription/${id}`, { raison }, { // ✅ Envoie la raison
+        await axios.post(`http://192.99.42.107:8090/api/admin/rejeter-inscription/${id}`, { raison }, { // ✅ Envoie la raison
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessage("❌ Inscription rejetée !");

@@ -99,7 +99,7 @@ const DetailedComparison = () => {
       <div className="comparison-grid">
         <div className="document-column source-column">
           <div className="document-header">
-            <h3>Your Document</h3>
+            <h3>Votre Document</h3>
             <div className="document-meta">
               {analysis.sourceTitle || 'Untitled Document'}
             </div>
@@ -120,7 +120,7 @@ const DetailedComparison = () => {
 
         <div className="document-column target-column">
           <div className="document-header">
-            <h3>Matching Document</h3>
+            <h3>Document Similaire</h3>
             <div className="document-meta">
               {analysis.similarDocuments?.[0]?.title || 'Untitled Document'}
             </div>

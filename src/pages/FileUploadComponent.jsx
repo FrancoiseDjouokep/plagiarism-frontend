@@ -91,11 +91,11 @@ const FileUploadComponent = () => {
     <div className="layout">
       <Navbar />
       <div className="file-upload-container">
-        <h2>Document Upload</h2>
+        <h2>Téléversement</h2>
 
         <div className="upload-section">
           <label className="file-input-label">
-            Select Files
+            Choisir des fichiers
             <input
               type="file"
               multiple
@@ -109,13 +109,13 @@ const FileUploadComponent = () => {
             disabled={isUploading || files.length === 0}
             className="upload-button"
           >
-            {isUploading ? 'Uploading...' : 'Upload Documents'}
+            {isUploading ? 'Chargement...' : 'Charger Documents'}
           </button>
         </div>
 
         {files.length > 0 && (
           <div className="file-list">
-            <h3>Selected Files ({files.length})</h3>
+            <h3>Fichiers Selectionnés ({files.length})</h3>
             <ul>
               {files.map((file) => (
                 <li key={file.name} className="file-item">

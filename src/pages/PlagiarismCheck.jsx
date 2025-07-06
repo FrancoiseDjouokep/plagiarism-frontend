@@ -113,17 +113,17 @@ const PlagiarismCheck = () => {
     <div className="layout">
       <Navbar />
       <div className="plagiarism-container">
-        <h2>Plagiarism Detection</h2>
+        <h2>Detection de Plagiat</h2>
         {results.length > 0 && (
           <button onClick={clearAnalysis} className="clear-analysis-button">
             Clear Analysis
           </button>
         )}
         <div className="summary-card">
-          <h3>Document Analysis Summary</h3>
+          <h3>Résumé des Analyse</h3>
           <div className="similarity-display">
             <div className="similarity-score">
-              Highest Similarity: {overallSimilarity.toFixed(2)}%
+              Similarité Max: {overallSimilarity.toFixed(2)}%
             </div>
             <div className="progress-container">
               <div
@@ -143,7 +143,7 @@ const PlagiarismCheck = () => {
 
         <div className="upload-section">
           <div className="form-group">
-            <label>Document Title (optional):</label>
+            <label>Titre document (optional):</label>
             <input
               type="text"
               value={title}

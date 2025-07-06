@@ -23,9 +23,6 @@ const Landing = () => {
                   <span>Commencer </span>
                   <i className="arrow-icon">→</i>
                 </button>
-                <button onClick={() => navigate('/demo')} className="secondary-button">
-                  <span>Voir une démo</span>
-                </button>
               </div>
               <div className="stats-bar">
                 <div className="stat-item">
@@ -196,7 +193,7 @@ const Landing = () => {
             <div className="cta-content">
               <h2>Prêt à garantir l'originalité de vos travaux ?</h2>
               <p>Rejoignez des milliers d'utilisateurs satisfaits et commencez à utiliser notre solution dès aujourd'hui.</p>
-              <button onClick={() => navigate('/signup')} className="cta-button large">
+              <button onClick={() => navigate('/register')} className="cta-button large">
                 <span>Créer un compte </span>
                 <i className="arrow-icon">→</i>
               </button>

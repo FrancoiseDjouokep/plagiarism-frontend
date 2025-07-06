@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/Activation.css';
-import { apiRequest } from '../utils/api'; // Use your existing apiRequest
+import { apiRequest } from '../utils/api'; 
 
 const Validation = () => {
   const [otp, setOtp] = useState('');
@@ -20,9 +20,9 @@ const Validation = () => {
     try {
       const response = await apiRequest('/verifier-email', 'POST', {
         code: otp,
-        email: location.state?.email || '' // Get email from navigation state
+        email: location.state?.email || '' 
       }, {
-        'X-Requested-With': 'XMLHttpRequest' // Important for some backends
+        'X-Requested-With': 'XMLHttpRequest' 
       });
       console.log("Réponse brute:", response);
 

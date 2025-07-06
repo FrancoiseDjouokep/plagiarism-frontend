@@ -10,7 +10,7 @@ const ViewAllUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/select", {
+        const res = await axios.get("http://192.99.42.107:8090/api/select", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

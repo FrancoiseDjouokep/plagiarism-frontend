@@ -269,13 +269,6 @@ const Register = () => {
 
             </div>
 
-            <div className="terms-privacy">
-              <input type="checkbox" id="terms" required />
-              <label htmlFor="terms" className="checkbox-label">
-                J'accepte les <Link to="/terms" target="_blank">conditions d'utilisation</Link> et la <Link to="/privacy" target="_blank">politique de confidentialité</Link>
-              </label>
-            </div>
-
             <button
               type="submit"
               className="login-button register-button"
@@ -288,11 +281,6 @@ const Register = () => {
               )}
             </button>
           </form>
-
-          <div className="divider">
-            <span>ou</span>
-          </div>
-
           <div className="register-link">
             <p>Vous avez déjà un compte? <Link to="/login">Se connecter</Link></p>
           </div>

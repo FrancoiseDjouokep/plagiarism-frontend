@@ -13,7 +13,7 @@ const History = () => {
     const fetchAnalyses = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/api/analysis/my-analyses', {
+        const response = await axios.get('http://192.99.42.107:8090/api/analysis/my-analyses', {
           headers: {
             Authorization: `Bearer ${token}`
           }

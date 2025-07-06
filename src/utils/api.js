@@ -3,7 +3,7 @@ import axios from 'axios';
 // Création de l'instance Axios avec la configuration de base
 export const API = axios.create({
   // Pour éviter le double préfixe /api/api, on utilise directement l'URL de base
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080',
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://192.99.42.107:8090',
   timeout: 100000,
   headers: {
     'Content-Type': 'application/json',

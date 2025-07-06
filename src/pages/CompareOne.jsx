@@ -139,7 +139,7 @@ const CompareOne = () => {
                 {file ? (
                   <span className="file-name">{file.name}</span>
                 ) : (
-                  <span className="file-placeholder">Glissez-déposez ou cliquez pour parcourir</span>
+                  <span className="file-placeholder">Cliquez pour parcourir</span>
                 )}
                 <input
                   type="file"

@@ -9,7 +9,7 @@ const Home = () => {
 
     const features = [
         {
-            title: 'Plagiarism Check',
+            title: 'Verification Plagiat',
             route: '/check',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18,7 +18,7 @@ const Home = () => {
             )
         },
         {
-            title: 'Compare One',
+            title: 'Verification Ciblée',
             route: '/compare-one',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,7 +27,7 @@ const Home = () => {
             )
         },
         {
-            title: 'Upload Document',
+            title: 'Téléversement',
             route: '/upload',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +36,7 @@ const Home = () => {
             )
         },
         {
-            title: 'AI Detect',
+            title: 'Detection IA',
             route: '/ai-detection',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">

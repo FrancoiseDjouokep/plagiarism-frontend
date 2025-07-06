@@ -10,7 +10,7 @@ const ViewAllAnalysis = () => {
   useEffect(() => {
     const fetchAnalyses = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/analysis/get-all", {
+        const res = await axios.get("http://192.99.42.107:8090/api/analysis/get-all", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
