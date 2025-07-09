@@ -1,15 +1,19 @@
 import axios from 'axios';
 
-// Création de l'instance Axios avec la configuration de base
+const isProduction = process.env.NODE_ENV === 'production';
+
+// En production (Vercel) → appeler les fonctions serverless en HTTPS directement
+const baseURL = isProduction ? '' : (process.env.REACT_APP_API_BASE_URL || 'http://192.99.42.107:8090');
+
 export const API = axios.create({
-  // Pour éviter le double préfixe /api/api, on utilise directement l'URL de base
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://192.99.42.107:8090',
+  baseURL,
   timeout: 100000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': '*/*'
   }
 });
+
 
 // Intercepteur de requêtes - ajoute le token d'authentification aux en-têtes
 API.interceptors.request.use((config) => {
